@@ -177,7 +177,7 @@ On the virtual machine, execute this chunk to plot correlations between SNPs and
 
 ```{r,eval=FALSE}
 data <- "LLS" # "Geuvadis" or "LLS"
-chr <- 22 # 1,2,3,...,22
+chr <- 1 # 1,2,3,...,22
 load(file.path(path,paste0("temp.",data,".chr",chr,".RData")))
 # id <- sample(names(a)[...],size=1) # significance (e.g. a & b)
 # i <- which(map$genes$gene_id=="...") # gene name (e.g. ENSG00000172967)
@@ -185,7 +185,12 @@ spliceQTL::visualise(Y=exons,X=snps,map=map,i=i)
 ```
 
 
+
+
+
 <!--
+xtable::print.xtable(xtable::xtable(x=table[,-1],digits=c(1,2,-2,0,0,0,0,-2)))
+
 #wait <- TRUE
 #while(wait){
 #    wait <- !file.exists(...)

@@ -236,12 +236,14 @@
 <a class="sourceLine" id="cb6-52" data-line-number="52"><span class="kw">save</span>(list,<span class="dt">file=</span><span class="st">"list.RData"</span>)</a></code></pre></div>
 <p>On the virtual machine, execute this chunk to plot correlations between SNPs and exons (unclear which genes should be examined).</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">data &lt;-<span class="st"> "LLS"</span> <span class="co"># "Geuvadis" or "LLS"</span></a>
-<a class="sourceLine" id="cb7-2" data-line-number="2">chr &lt;-<span class="st"> </span><span class="dv">22</span> <span class="co"># 1,2,3,...,22</span></a>
+<a class="sourceLine" id="cb7-2" data-line-number="2">chr &lt;-<span class="st"> </span><span class="dv">1</span> <span class="co"># 1,2,3,...,22</span></a>
 <a class="sourceLine" id="cb7-3" data-line-number="3"><span class="kw">load</span>(<span class="kw">file.path</span>(path,<span class="kw">paste0</span>(<span class="st">"temp."</span>,data,<span class="st">".chr"</span>,chr,<span class="st">".RData"</span>)))</a>
 <a class="sourceLine" id="cb7-4" data-line-number="4"><span class="co"># id &lt;- sample(names(a)[...],size=1) # significance (e.g. a &amp; b)</span></a>
 <a class="sourceLine" id="cb7-5" data-line-number="5"><span class="co"># i &lt;- which(map$genes$gene_id=="...") # gene name (e.g. ENSG00000172967)</span></a>
 <a class="sourceLine" id="cb7-6" data-line-number="6">spliceQTL<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/spliceQTL/topics/visualise">visualise</a></span>(<span class="dt">Y=</span>exons,<span class="dt">X=</span>snps,<span class="dt">map=</span>map,<span class="dt">i=</span>i)</a></code></pre></div>
 <!--
+xtable::print.xtable(xtable::xtable(x=table[,-1],digits=c(1,2,-2,0,0,0,0,-2)))
+
 #wait <- TRUE
 #while(wait){
 #    wait <- !file.exists(...)
