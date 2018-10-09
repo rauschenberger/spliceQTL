@@ -7,7 +7,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-This vignette requires both a local machine and the BBMRI virtual machine. On the virtual machine, execute this chunk to set the library path, update the R package spliceQTL, and set the working directory.
+This vignette requires both a local machine and the BBMRI virtual machine. On the virtual machine, execute this chunk to set the library path, update the R package spliceQTL, and set the working directory. 
 
 ```{r virtual machine,eval=FALSE}
 lib <- "/virdir/Scratch/arauschenberger/library"
@@ -18,10 +18,14 @@ path <- "/virdir/Scratch/arauschenberger/spliceQTL"
 setwd(path)
 ```
 
+(Please always execute this chunk when starting a new R session on the virtual machine!)
+
+# Prepare data
+
 On a local machine with PLINK, execute this chunk to obtain the Geuvadis SNP data. Then move the files from the local to the virtual machine.
 
 ```{r obtain (local),eval=FALSE}
-for(chr in 1:22){ 
+for(chr in 1:22){
     spliceQTL::get.snps.geuvadis(chr=chr,data="N:/semisup/data/eQTLs",
                                  path="N:/spliceQTL/data/Geuvadis")
 }
@@ -102,10 +106,12 @@ for(chr in 1:22){
 }
 ```
 
+# Test hypotheses
+
 On the virtual machine, execute this chunk to test for alternative splicing.
 
 ```{r test,eval=FALSE}
-for(chr in 22:1){ # 22:1
+for(chr in 1:22){
     for(data in c("Geuvadis","LLS")){
         cat("Analysing",data,chr,":",as.character(Sys.time()),"\n")
         rm(list=setdiff(ls(),c("data","chr","path"))); gc(); cat(".")
@@ -116,12 +122,14 @@ for(chr in 22:1){ # 22:1
 }
 ```
 
+# Analyse results
+
 On the virtual machine, execute this chunk to compare the results between the Geuvadis and the BBMRI project.
 
 ```{r,eval=FALSE}
 table <- data.frame(chr=seq_len(22))
 list <- list()
-for(i in seq_len(22)){
+for(i in 1:22){
   # load p-values
   load(file.path(path,paste0("pval.Geuvadis.chr",i,".RData")))
   a <- pvalue; pvalue <- NA
@@ -168,18 +176,17 @@ for(i in seq_len(22)){
 save(table,file="table.RData")
 
 list <- do.call(what="rbind",args=list)
-names <- do.call(what="rbind",args=list)
+names <- spliceQTL::map.genes(chr=NULL)
 list$symbol <- names$gene_name[match(x=list$gene,names$gene_id)]
 save(list,file="list.RData")
 ```
 
-On the virtual machine, execute this chunk to plot correlations between SNPs and exons (unclear which genes should be examined).
+On the virtual machine, execute this chunk to plot correlations between SNPs and exons.
 
 ```{r,eval=FALSE}
 data <- "LLS" # "Geuvadis" or "LLS"
 chr <- 1 # 1,2,3,...,22
 load(file.path(path,paste0("temp.",data,".chr",chr,".RData")))
-# id <- sample(names(a)[...],size=1) # significance (e.g. a & b)
 # i <- which(map$genes$gene_id=="...") # gene name (e.g. ENSG00000172967)
 spliceQTL::visualise(Y=exons,X=snps,map=map,i=i)
 ```

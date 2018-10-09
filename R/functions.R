@@ -935,7 +935,8 @@ test.multiple <- function(Y,X,map,rho=c(0,0.5,1),spec=1,min=100,steps=20){
 #' Plot SNP-exon correlations
 #' 
 #' @description
-#' This function ...
+#' This function plot the absolute Spearman correlation coefficients
+#' between SNP and exons.
 #' 
 #' @param Y
 #' exon expression\strong{:}

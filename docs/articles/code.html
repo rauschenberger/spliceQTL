@@ -99,8 +99,12 @@
 <a class="sourceLine" id="cb1-4" data-line-number="4"><span class="kw">library</span>(<span class="st">"spliceQTL"</span>,<span class="dt">lib.loc=</span>lib)</a>
 <a class="sourceLine" id="cb1-5" data-line-number="5">path &lt;-<span class="st"> "/virdir/Scratch/arauschenberger/spliceQTL"</span></a>
 <a class="sourceLine" id="cb1-6" data-line-number="6"><span class="kw">setwd</span>(path)</a></code></pre></div>
+<p>(Please always execute this chunk when starting a new R session on the virtual machine!)</p>
+<div id="prepare-data" class="section level1">
+<h1 class="hasAnchor">
+<a href="#prepare-data" class="anchor"></a>Prepare data</h1>
 <p>On a local machine with PLINK, execute this chunk to obtain the Geuvadis SNP data. Then move the files from the local to the virtual machine.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="cf">for</span>(chr <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">22</span>){ </a>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="cf">for</span>(chr <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">22</span>){</a>
 <a class="sourceLine" id="cb2-2" data-line-number="2">    spliceQTL<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/spliceQTL/topics/get.snps.geuvadis">get.snps.geuvadis</a></span>(<span class="dt">chr=</span>chr,<span class="dt">data=</span><span class="st">"N:/semisup/data/eQTLs"</span>,</a>
 <a class="sourceLine" id="cb2-3" data-line-number="3">                                 <span class="dt">path=</span><span class="st">"N:/spliceQTL/data/Geuvadis"</span>)</a>
 <a class="sourceLine" id="cb2-4" data-line-number="4">}</a></code></pre></div>
@@ -171,8 +175,12 @@
 <a class="sourceLine" id="cb4-58" data-line-number="58"><span class="co">#n</span></a>
 <a class="sourceLine" id="cb4-59" data-line-number="59"><span class="co">#exit</span></a>
 <a class="sourceLine" id="cb4-60" data-line-number="60">}</a></code></pre></div>
+</div>
+<div id="test-hypotheses" class="section level1">
+<h1 class="hasAnchor">
+<a href="#test-hypotheses" class="anchor"></a>Test hypotheses</h1>
 <p>On the virtual machine, execute this chunk to test for alternative splicing.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="cf">for</span>(chr <span class="cf">in</span> <span class="dv">22</span><span class="op">:</span><span class="dv">1</span>){ <span class="co"># 22:1</span></a>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="cf">for</span>(chr <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">22</span>){</a>
 <a class="sourceLine" id="cb5-2" data-line-number="2">    <span class="cf">for</span>(data <span class="cf">in</span> <span class="kw">c</span>(<span class="st">"Geuvadis"</span>,<span class="st">"LLS"</span>)){</a>
 <a class="sourceLine" id="cb5-3" data-line-number="3">        <span class="kw">cat</span>(<span class="st">"Analysing"</span>,data,chr,<span class="st">":"</span>,<span class="kw">as.character</span>(<span class="kw">Sys.time</span>()),<span class="st">"</span><span class="ch">\n</span><span class="st">"</span>)</a>
 <a class="sourceLine" id="cb5-4" data-line-number="4">        <span class="kw">rm</span>(<span class="dt">list=</span><span class="kw">setdiff</span>(<span class="kw">ls</span>(),<span class="kw">c</span>(<span class="st">"data"</span>,<span class="st">"chr"</span>,<span class="st">"path"</span>))); <span class="kw">gc</span>(); <span class="kw">cat</span>(<span class="st">"."</span>)</a>
@@ -181,10 +189,14 @@
 <a class="sourceLine" id="cb5-7" data-line-number="7">        <span class="kw">save</span>(<span class="dt">object=</span>pvalue,<span class="dt">file=</span><span class="kw">file.path</span>(path,<span class="kw">paste0</span>(<span class="st">"pval."</span>,data,<span class="st">".chr"</span>,chr,<span class="st">".RData"</span>))); <span class="kw">cat</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">"</span>)</a>
 <a class="sourceLine" id="cb5-8" data-line-number="8">    }</a>
 <a class="sourceLine" id="cb5-9" data-line-number="9">}</a></code></pre></div>
+</div>
+<div id="analyse-results" class="section level1">
+<h1 class="hasAnchor">
+<a href="#analyse-results" class="anchor"></a>Analyse results</h1>
 <p>On the virtual machine, execute this chunk to compare the results between the Geuvadis and the BBMRI project.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">table &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">chr=</span><span class="kw">seq_len</span>(<span class="dv">22</span>))</a>
 <a class="sourceLine" id="cb6-2" data-line-number="2">list &lt;-<span class="st"> </span><span class="kw">list</span>()</a>
-<a class="sourceLine" id="cb6-3" data-line-number="3"><span class="cf">for</span>(i <span class="cf">in</span> <span class="kw">seq_len</span>(<span class="dv">22</span>)){</a>
+<a class="sourceLine" id="cb6-3" data-line-number="3"><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">22</span>){</a>
 <a class="sourceLine" id="cb6-4" data-line-number="4">  <span class="co"># load p-values</span></a>
 <a class="sourceLine" id="cb6-5" data-line-number="5">  <span class="kw">load</span>(<span class="kw">file.path</span>(path,<span class="kw">paste0</span>(<span class="st">"pval.Geuvadis.chr"</span>,i,<span class="st">".RData"</span>)))</a>
 <a class="sourceLine" id="cb6-6" data-line-number="6">  a &lt;-<span class="st"> </span>pvalue; pvalue &lt;-<span class="st"> </span><span class="ot">NA</span></a>
@@ -231,16 +243,15 @@
 <a class="sourceLine" id="cb6-47" data-line-number="47"><span class="kw">save</span>(table,<span class="dt">file=</span><span class="st">"table.RData"</span>)</a>
 <a class="sourceLine" id="cb6-48" data-line-number="48"></a>
 <a class="sourceLine" id="cb6-49" data-line-number="49">list &lt;-<span class="st"> </span><span class="kw">do.call</span>(<span class="dt">what=</span><span class="st">"rbind"</span>,<span class="dt">args=</span>list)</a>
-<a class="sourceLine" id="cb6-50" data-line-number="50">names &lt;-<span class="st"> </span><span class="kw">do.call</span>(<span class="dt">what=</span><span class="st">"rbind"</span>,<span class="dt">args=</span>list)</a>
+<a class="sourceLine" id="cb6-50" data-line-number="50">names &lt;-<span class="st"> </span>spliceQTL<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/spliceQTL/topics/map.genes">map.genes</a></span>(<span class="dt">chr=</span><span class="ot">NULL</span>)</a>
 <a class="sourceLine" id="cb6-51" data-line-number="51">list<span class="op">$</span>symbol &lt;-<span class="st"> </span>names<span class="op">$</span>gene_name[<span class="kw">match</span>(<span class="dt">x=</span>list<span class="op">$</span>gene,names<span class="op">$</span>gene_id)]</a>
 <a class="sourceLine" id="cb6-52" data-line-number="52"><span class="kw">save</span>(list,<span class="dt">file=</span><span class="st">"list.RData"</span>)</a></code></pre></div>
-<p>On the virtual machine, execute this chunk to plot correlations between SNPs and exons (unclear which genes should be examined).</p>
+<p>On the virtual machine, execute this chunk to plot correlations between SNPs and exons.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">data &lt;-<span class="st"> "LLS"</span> <span class="co"># "Geuvadis" or "LLS"</span></a>
 <a class="sourceLine" id="cb7-2" data-line-number="2">chr &lt;-<span class="st"> </span><span class="dv">1</span> <span class="co"># 1,2,3,...,22</span></a>
 <a class="sourceLine" id="cb7-3" data-line-number="3"><span class="kw">load</span>(<span class="kw">file.path</span>(path,<span class="kw">paste0</span>(<span class="st">"temp."</span>,data,<span class="st">".chr"</span>,chr,<span class="st">".RData"</span>)))</a>
-<a class="sourceLine" id="cb7-4" data-line-number="4"><span class="co"># id &lt;- sample(names(a)[...],size=1) # significance (e.g. a &amp; b)</span></a>
-<a class="sourceLine" id="cb7-5" data-line-number="5"><span class="co"># i &lt;- which(map$genes$gene_id=="...") # gene name (e.g. ENSG00000172967)</span></a>
-<a class="sourceLine" id="cb7-6" data-line-number="6">spliceQTL<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/spliceQTL/topics/visualise">visualise</a></span>(<span class="dt">Y=</span>exons,<span class="dt">X=</span>snps,<span class="dt">map=</span>map,<span class="dt">i=</span>i)</a></code></pre></div>
+<a class="sourceLine" id="cb7-4" data-line-number="4"><span class="co"># i &lt;- which(map$genes$gene_id=="...") # gene name (e.g. ENSG00000172967)</span></a>
+<a class="sourceLine" id="cb7-5" data-line-number="5">spliceQTL<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/spliceQTL/topics/visualise">visualise</a></span>(<span class="dt">Y=</span>exons,<span class="dt">X=</span>snps,<span class="dt">map=</span>map,<span class="dt">i=</span>i)</a></code></pre></div>
 <!--
 xtable::print.xtable(xtable::xtable(x=table[,-1],digits=c(1,2,-2,0,0,0,0,-2)))
 
@@ -251,9 +262,19 @@ xtable::print.xtable(xtable::xtable(x=table[,-1],digits=c(1,2,-2,0,0,0,0,-2)))
 #}
 memory and CPU usage Linux: htop
 -->
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+        <div id="tocnav">
+      <h2 class="hasAnchor">
+<a href="#tocnav" class="anchor"></a>Contents</h2>
+      <ul class="nav nav-pills nav-stacked">
+<li><a href="#prepare-data">Prepare data</a></li>
+      <li><a href="#test-hypotheses">Test hypotheses</a></li>
+      <li><a href="#analyse-results">Analyse results</a></li>
+      </ul>
+</div>
       </div>
 
 </div>

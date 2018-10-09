@@ -20,7 +20,8 @@ matrix with \eqn{n} rows (samples) and \eqn{q} columns (SNPs)}
 integer between \eqn{1} and \code{nrow(map$genes)}}
 }
 \description{
-This function ...
+This function plot the absolute Spearman correlation coefficients
+between SNP and exons.
 }
 \examples{
 # see vignette
