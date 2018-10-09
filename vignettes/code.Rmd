@@ -142,16 +142,17 @@ for(i in 1:22){
   a <- a[names,sel]
   b <- b[names,sel]
   
-  #graphics::plot.new()
-  #graphics::plot.window(xlim=c(0.5,length(a)+0.5),ylim=c(-1,1)*max(c(a,b)))
-  #graphics::box()
-  #graphics::axis(side=1)
-  #graphics::axis(side=2)
-  #graphics::points(a,col="red")
-  #graphics::segments(x0=seq_along(a),y0=0,y1=a,col="red")
-  #graphics::points(-b,col="blue")
-  #graphics::segments(x0=seq_along(b),y0=0,y1=-b,col="blue")
-  #graphics::abline(h=0,col="grey")
+  if(FALSE){
+   # "Manhattan" plot
+   graphics::plot.new()
+   graphics::plot.window(xlim=c(0.5,length(a)+0.5),ylim=c(-1,1)*max(-log10(c(a,b))))
+   graphics::box()
+   graphics::axis(side=1)
+   graphics::axis(side=2)
+   graphics::segments(x0=seq_along(a),y0=0,y1=-log10(a),col="darkred")
+   graphics::segments(x0=seq_along(b),y0=0,y1=log10(b),col="darkblue")
+   graphics::abline(h=0,col="grey")
+  }
   
   # correlation
   file <- file.path(path,"plots",paste0("cor.chr",i,".pdf"))
