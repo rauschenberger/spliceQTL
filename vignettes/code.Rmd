@@ -111,13 +111,14 @@ for(chr in 1:22){
 On the virtual machine, execute this chunk to test for alternative splicing.
 
 ```{r test,eval=FALSE}
+trial <- "/virdir/Scratch/arauschenbe/spliceQTL/trial"
 for(chr in 1:22){
     for(data in c("Geuvadis","LLS")){
         cat("Analysing",data,chr,":",as.character(Sys.time()),"\n")
         rm(list=setdiff(ls(),c("data","chr","path"))); gc(); cat(".")
         load(file.path(path,paste0("temp.",data,".chr",chr,".RData"))); cat(".")
-        pvalue <- spliceQTL::test.multiple(Y=exons,X=snps,map=map,rho=1,spec=16); cat(".")
-        save(object=pvalue,file=file.path(path,paste0("pval.",data,".chr",chr,".RData"))); cat("\n")
+        pvalue <- spliceQTL::test.multiple(Y=exons, X=snps, map=map,spec=16,w.type="cov"); cat(".")
+        save(object=pvalue,file=file.path(trial,paste0("pval.",data,".chr",chr,".RData"))); cat("\n")
     }
 }
 ```
