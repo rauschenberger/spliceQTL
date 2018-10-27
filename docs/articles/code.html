@@ -180,7 +180,7 @@ spliceQTL<span class="op">::</span><span class="kw"><a href="http://www.rdocumen
 <h1 class="hasAnchor">
 <a href="#test-hypotheses" class="anchor"></a>Test hypotheses</h1>
 <p>On the virtual machine, execute this chunk to test for alternative splicing.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trial &lt;-<span class="st"> "/virdir/Scratch/arauschenbe/spliceQTL/trial"</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trial &lt;-<span class="st"> "/virdir/Scratch/arauschenberger/spliceQTL/trial"</span>
 <span class="cf">for</span>(chr <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">22</span>){
     <span class="cf">for</span>(data <span class="cf">in</span> <span class="kw">c</span>(<span class="st">"Geuvadis"</span>,<span class="st">"LLS"</span>)){
         <span class="kw">cat</span>(<span class="st">"Analysing"</span>,data,chr,<span class="st">":"</span>,<span class="kw">as.character</span>(<span class="kw">Sys.time</span>()),<span class="st">"</span><span class="ch">\n</span><span class="st">"</span>)
@@ -217,7 +217,7 @@ list &lt;-<span class="st"> </span><span class="kw">list</span>()
   <span class="co">#a &lt;- a[names,sel]</span>
   <span class="co">#b &lt;- b[names,sel]</span>
   
-  <span class="co"># filter tests (new)</span>
+  <span class="co"># filter tests (trial)</span>
   names &lt;-<span class="st"> </span><span class="kw">intersect</span>(<span class="kw">rownames</span>(a),<span class="kw">rownames</span>(b))
   a &lt;-<span class="st"> </span>a[names]
   b &lt;-<span class="st"> </span>b[names]
