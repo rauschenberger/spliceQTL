@@ -229,90 +229,90 @@ get.g2stat.multin <- function(U, tau.mat)
 ### G2 p.values : G2T$G2p
 ### G2 TS : G2T$$Sg
 #
-G2.multin.rho <- function(dep.data,indep.data,stand=TRUE,nperm=100,grouping=F,rho=0,mu=0){
-  
-  nperm = nperm
-  ## check for the number of samples in dep and indep data
-  
-  
-  if (nrow(dep.data)!=nrow(indep.data)){
-    cat("number of samples not same in dep and indep data","\n")
-  }
-  
-  if(any(abs(rho)>1)){
-    cat("correlations rho larger than abs(1) are not allowed")
-  }
-  
-  nresponses <- ncol(dep.data)
-  ncovariates <- ncol(indep.data)
-  ### centering and standardizing the data are not done in this case
-  
-  #  dep.data = scale(dep.data,center=T,scale=stand)
-  #  indep.data = scale(indep.data,center=T,scale=stand)
-  
-  #### No  grouping of the samples.
-  
-  ## Calculate U=(I-H)Y and UU', where Y has observations on rows; also tau.mat=X*W.rho*X', 
-  ##   where X has observations on rows and variables on columns
-  ##  and W.rho = I + rho*(J-I), a square matrix with as many rows as columns in X
-  ## NOTE: this formulation uses X with n obs on the rows and m covariates no the columns, so it is the transpose of the first calculations
-  nsamples <- nrow(dep.data)
-  n.persample <- rowSums(dep.data)
-  n.all <- sum(dep.data)
-  H <- (1/n.all)*matrix( rep(n.persample,each=nsamples),nrow=nsamples,byrow=T)
-  U <- (diag(rep(1,nsamples)) - H) %*% dep.data
-  ## Now we may have a vector of values for rho - so we define tau.mat as an array, with the 3rd index corresponding to the value of rho
-  tau.mat <- array(0,dim=c(nsamples,nsamples,length(rho)))
-  for(xk in 1:length(rho))  
-  {  
-    if (rho[xk]==0) { tau.mat[,,xk] <- tcrossprod(indep.data) } 
-    else { w.rho <- diag(rep(1,ncovariates)) + rho[xk]*(tcrossprod(rep(1,ncovariates)) -diag(rep(1,ncovariates))  )
-    tau.mat[,,xk] <- indep.data %*% w.rho %*% t(indep.data)}
-    
-  }
-  ######################################
-  ### NOTES ARMIN START ################
-  # all(X %*% t(X) == tau.mat[,,1]) # rho = 0 -> TRUE
-  # all(X %*% (t(X) %*% X) %*% t(X) == tau.mat[,,1]) # rho = 1
-  # plot(as.numeric(X %*% (t(X) %*% X) %*% t(X)),as.numeric(tau.mat[,,1]))
-  ### NOTES ARMIN END ##################
-  ######################################
-  samp_names = 1:nsamples ## this was rownames(indep.data), but I now do this so that rownames do not have to be added to the array tau.mat
-  Sg = get.g2stat.multin(U,mu=mu,rho=rho,tau.mat)
-  ### now we will have a vector as result, with one value per combination of values of rho and mu
-  #
-  ### G2 
-  ### Permutations
-  # When using permutations: only the rows of tau.mat are permuted
-  # To check how the permutations can be efficiently applied, see tests_permutation_g2_multin.R
-  
-  
-  perm_samp = matrix(0, nrow=nrow(indep.data), ncol=nperm)   ## generate the permutation matrix
-  for(i in 1:ncol(perm_samp)){
-    perm_samp[,i] = samp_names[sample(1:length(samp_names),length(samp_names))]
-  }
-  
-  ## permutation starts - recompute tau.mat  (or recompute U each time)
-  for (perm in 1:nperm){
-    tau.mat.perm = tau.mat[perm_samp[,perm],,,drop=FALSE]          # permute rows
-    tau.mat.perm = tau.mat.perm[,perm_samp[,perm],,drop=FALSE]     # permute columns
-    
-    Sg = c(Sg,spliceQTL:::get.g2stat.multin(U, mu=mu,rho=rho,tau.mat.perm) )
-  }
-  
-  ########################################################################
-  
-  #### G2 test statistic
-  # *** recompute for a vector of values for each case - just reformat the result with as many rows as permutations + 1,
-  # and as many columns as combinations of values of rho and mu
-  Sg = matrix(Sg,nrow=nperm+1,ncol=length(mu)*length(rho))
-  colnames(Sg) <- paste(rep("rho",ncol(Sg)),rep(1:length(rho),each=length(mu)),rep("mu",ncol(Sg)),rep(1:length(mu),length(rho)) )
-  
-  ### Calculte G2 pval
-  G2p =  apply(Sg,2,spliceQTL:::get.pval.percol) 
-  
-  return (list(perm = perm_samp,G2p = G2p,Sg = Sg))
-}
+# G2.multin.rho <- function(dep.data,indep.data,stand=TRUE,nperm=100,grouping=F,rho=0,mu=0){
+#   
+#   nperm = nperm
+#   ## check for the number of samples in dep and indep data
+#   
+#   
+#   if (nrow(dep.data)!=nrow(indep.data)){
+#     cat("number of samples not same in dep and indep data","\n")
+#   }
+#   
+#   if(any(abs(rho)>1)){
+#     cat("correlations rho larger than abs(1) are not allowed")
+#   }
+#   
+#   nresponses <- ncol(dep.data)
+#   ncovariates <- ncol(indep.data)
+#   ### centering and standardizing the data are not done in this case
+#   
+#   #  dep.data = scale(dep.data,center=T,scale=stand)
+#   #  indep.data = scale(indep.data,center=T,scale=stand)
+#   
+#   #### No  grouping of the samples.
+#   
+#   ## Calculate U=(I-H)Y and UU', where Y has observations on rows; also tau.mat=X*W.rho*X', 
+#   ##   where X has observations on rows and variables on columns
+#   ##  and W.rho = I + rho*(J-I), a square matrix with as many rows as columns in X
+#   ## NOTE: this formulation uses X with n obs on the rows and m covariates no the columns, so it is the transpose of the first calculations
+#   nsamples <- nrow(dep.data)
+#   n.persample <- rowSums(dep.data)
+#   n.all <- sum(dep.data)
+#   H <- (1/n.all)*matrix( rep(n.persample,each=nsamples),nrow=nsamples,byrow=T)
+#   U <- (diag(rep(1,nsamples)) - H) %*% dep.data
+#   ## Now we may have a vector of values for rho - so we define tau.mat as an array, with the 3rd index corresponding to the value of rho
+#   tau.mat <- array(0,dim=c(nsamples,nsamples,length(rho)))
+#   for(xk in 1:length(rho))  
+#   {  
+#     if (rho[xk]==0) { tau.mat[,,xk] <- tcrossprod(indep.data) } 
+#     else { w.rho <- diag(rep(1,ncovariates)) + rho[xk]*(tcrossprod(rep(1,ncovariates)) -diag(rep(1,ncovariates))  )
+#     tau.mat[,,xk] <- indep.data %*% w.rho %*% t(indep.data)}
+#     
+#   }
+#   ######################################
+#   ### NOTES ARMIN START ################
+#   # all(X %*% t(X) == tau.mat[,,1]) # rho = 0 -> TRUE
+#   # all(X %*% (t(X) %*% X) %*% t(X) == tau.mat[,,1]) # rho = 1
+#   # plot(as.numeric(X %*% (t(X) %*% X) %*% t(X)),as.numeric(tau.mat[,,1]))
+#   ### NOTES ARMIN END ##################
+#   ######################################
+#   samp_names = 1:nsamples ## this was rownames(indep.data), but I now do this so that rownames do not have to be added to the array tau.mat
+#   Sg = get.g2stat.multin(U,mu=mu,rho=rho,tau.mat)
+#   ### now we will have a vector as result, with one value per combination of values of rho and mu
+#   #
+#   ### G2 
+#   ### Permutations
+#   # When using permutations: only the rows of tau.mat are permuted
+#   # To check how the permutations can be efficiently applied, see tests_permutation_g2_multin.R
+#   
+#   
+#   perm_samp = matrix(0, nrow=nrow(indep.data), ncol=nperm)   ## generate the permutation matrix
+#   for(i in 1:ncol(perm_samp)){
+#     perm_samp[,i] = samp_names[sample(1:length(samp_names),length(samp_names))]
+#   }
+#   
+#   ## permutation starts - recompute tau.mat  (or recompute U each time)
+#   for (perm in 1:nperm){
+#     tau.mat.perm = tau.mat[perm_samp[,perm],,,drop=FALSE]          # permute rows
+#     tau.mat.perm = tau.mat.perm[,perm_samp[,perm],,drop=FALSE]     # permute columns
+#     
+#     Sg = c(Sg,spliceQTL:::get.g2stat.multin(U, mu=mu,rho=rho,tau.mat.perm) )
+#   }
+#   
+#   ########################################################################
+#   
+#   #### G2 test statistic
+#   # *** recompute for a vector of values for each case - just reformat the result with as many rows as permutations + 1,
+#   # and as many columns as combinations of values of rho and mu
+#   Sg = matrix(Sg,nrow=nperm+1,ncol=length(mu)*length(rho))
+#   colnames(Sg) <- paste(rep("rho",ncol(Sg)),rep(1:length(rho),each=length(mu)),rep("mu",ncol(Sg)),rep(1:length(mu),length(rho)) )
+#   
+#   ### Calculte G2 pval
+#   G2p =  apply(Sg,2,spliceQTL:::get.pval.percol) 
+#   
+#   return (list(perm = perm_samp,G2p = G2p,Sg = Sg))
+# }
 
 #
 # Function: G2.multin
@@ -409,21 +409,21 @@ G2.multin <- function(dep.data, indep.data, stand = TRUE, nperm=100, W=NULL){
 #  tau.mat = X' W.rho X, a n*n matrix : both square, symmetric matrices with an equal number of rows
 # Output: test statistic (single value)
 # 
-get.g2stat.multin <- function(U, mu, rho, tau.mat){
-  g2tstat <- NULL
-  for(xk in 1:length(rho))
-  {
-    for(xj in 1:length(mu))
-    {
-      if(mu[xj]==0) { g2tstat <- c(g2tstat, sum( diag( tcrossprod(U) %*% tau.mat[,,xk] ) ) )
-      } else {
-        g2tstat <- c(g2tstat, (1-mu[xj])*sum(diag( tcrossprod(U) %*% tau.mat[,,xk] ) ) + mu[xj]*sum( t(U) %*% tau.mat[,,xk] %*% U )  )
-      }
-      
-    }
-  }
-  g2tstat
-}
+# get.g2stat.multin <- function(U, mu, rho, tau.mat){
+#   g2tstat <- NULL
+#   for(xk in 1:length(rho))
+#   {
+#     for(xj in 1:length(mu))
+#     {
+#       if(mu[xj]==0) { g2tstat <- c(g2tstat, sum( diag( tcrossprod(U) %*% tau.mat[,,xk] ) ) )
+#       } else {
+#         g2tstat <- c(g2tstat, (1-mu[xj])*sum(diag( tcrossprod(U) %*% tau.mat[,,xk] ) ) + mu[xj]*sum( t(U) %*% tau.mat[,,xk] %*% U )  )
+#       }
+#       
+#     }
+#   }
+#   g2tstat
+# }
 
 
 # Function: get.pval.percol
